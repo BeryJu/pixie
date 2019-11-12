@@ -40,12 +40,11 @@ build-linux-arm64:
   stage: build
   variables:
     GOOS: linux
-    GOARCH: arm64
     CGO_ENABLED: '0'
   script:
     - go get github.com/gobuffalo/packr/v2/packr2
     - packr2
-    - go build -v -o bin/pixie-linux-arm64
+    - GOARCH=arm64 go build -v -o bin/pixie-linux-arm64
     - chmod +x bin/pixie-linux-arm64
   artifacts:
     paths:
