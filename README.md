@@ -25,16 +25,6 @@ docker run -v "whatever directory you want to share":/data docker.beryju.org/pix
 
 Now you can access pixie on http://localhost:8080
 
-### Docker
-
-Run the container like this:
-
-```
-docker run -v "whatever directory you want to share":/data docker.beryju.org/pixie/server:latest -r=/data
-```
-
-Now you can access pixie on http://localhost:8080
-
 ### Binary
 
 Download a binary from [GitLab](https://git.beryju.org/BeryJu.org/pixie/pipelines) and run it:
