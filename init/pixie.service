@@ -1,0 +1,13 @@
+[Unit]
+Description=pixie
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+User=nobody
+ExecStart=/opt/pixie -r /opt/data
+
+[Install]
+WantedBy=multi-user.target

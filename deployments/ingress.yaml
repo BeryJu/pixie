@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+  labels:
+    k8s-app: pixie
+  name: pixie
+spec:
+  rules:
+  - host: i.beryju.org
+    http:
+      paths:
+      - backend:
+          serviceName: pixie
+          servicePort: http
+        path: /
+  tls:
+  - hosts:
+    - i.beryju.org
+    secretName: pixie-acme

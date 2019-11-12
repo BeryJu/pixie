@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: pixie
+  name: pixie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: pixie
+  template:
+    metadata:
+      labels:
+        k8s-app: pixie
+    spec:
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: minio-pv-claim
+      containers:
+        - args:
+            - -r=/data/images/
+          command:
+            - /pixie
+          image: docker.beryju.org/jens/pixie:pre2
+          imagePullPolicy: Always
+          name: pixie
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: storage
+          livenessProbe:
+            httpGet:
+              path: /-/ping
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /-/ping
+              port: http
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10M
+            limits:
+              cpu: 50m
+              memory: 50M

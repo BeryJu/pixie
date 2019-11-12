@@ -1,0 +1,61 @@
+image: golang:latest
+
+before_script:
+  - cd $GOPATH/src
+  - mkdir -p git.beryju.org/$CI_PROJECT_NAMESPACE
+  - cd git.beryju.org/$CI_PROJECT_NAMESPACE
+  - ln -s $CI_PROJECT_DIR
+  - cd $CI_PROJECT_NAME
+
+stages:
+  - test
+  - build
+
+test:
+  stage: test
+  script:
+    - go test
+
+lint:
+  stage: test
+  script:
+    - go get golang.org/x/lint/golint
+    - golint
+
+build-linux-amd64:
+  stage: build
+  variables:
+    GOOS: linux
+    GOARCH: amd64
+    CGO_ENABLED: '0'
+  script:
+    - go get github.com/gobuffalo/packr/v2/packr2
+    - packr2
+    - go build -v -o bin/pixie-linux-amd64
+    - chmod +x bin/pixie-linux-amd64
+  artifacts:
+    paths:
+      - bin/pixie-linux-amd64
+build-linux-arm64:
+  stage: build
+  variables:
+    GOOS: linux
+    GOARCH: arm64
+    CGO_ENABLED: '0'
+  script:
+    - go get github.com/gobuffalo/packr/v2/packr2
+    - packr2
+    - go build -v -o bin/pixie-linux-arm64
+    - chmod +x bin/pixie-linux-arm64
+  artifacts:
+    paths:
+      - bin/pixie-linux-arm64
+build-docker:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  before_script:
+    - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
+  script:
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/pixie/server:latest --destination docker.beryju.org/pixie/server:$CI_COMMIT_SHORT_SHA
