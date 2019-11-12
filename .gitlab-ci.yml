@@ -27,12 +27,18 @@ build-linux-amd64:
   variables:
     GOOS: linux
     GOARCH: amd64
-    CGO_ENABLED: '0'
+    CGO_ENABLED: "0"
   script:
     - go get github.com/gobuffalo/packr/v2/packr2
     - packr2
     - go build -v -o bin/pixie-linux-amd64
     - chmod +x bin/pixie-linux-amd64
+  only:
+    changes:
+      - cmd/
+      - internal/
+      - pkg/
+      - web/
   artifacts:
     paths:
       - bin/pixie-linux-amd64
@@ -40,12 +46,18 @@ build-linux-arm64:
   stage: build
   variables:
     GOOS: linux
-    CGO_ENABLED: '0'
+    CGO_ENABLED: "0"
   script:
     - go get github.com/gobuffalo/packr/v2/packr2
     - packr2
     - GOARCH=arm64 go build -v -o bin/pixie-linux-arm64
     - chmod +x bin/pixie-linux-arm64
+  only:
+    changes:
+      - cmd/
+      - internal/
+      - pkg/
+      - web/
   artifacts:
     paths:
       - bin/pixie-linux-arm64
@@ -58,3 +70,10 @@ build-docker:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/pixie/server:latest --destination docker.beryju.org/pixie/server:$CI_COMMIT_SHORT_SHA
+  only:
+    changes:
+      - cmd/
+      - internal/
+      - pkg/
+      - web/
+      - Dockerfile
