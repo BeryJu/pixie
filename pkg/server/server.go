@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"git.beryju.org/BeryJu.org/pixie/internal"
@@ -21,7 +22,7 @@ type Server struct {
 func NewServer() *Server {
 	logger := log.WithField("component", "http-server")
 	var fsInstance base.FileSystem
-	if config.CfgCacheEnabled {
+	if config.Current.CacheEnabled {
 		logger.Debug("Using cached filesystem.")
 		fsInstance = cache.NewCachedFileSystem()
 	} else {
@@ -40,6 +41,10 @@ func NewServer() *Server {
 // Run Start HTTP Server
 func Run() {
 	server := NewServer()
-	server.Logger.Infof("Serving '%s'", config.CfgRootDir)
-	server.Logger.Fatal(http.ListenAndServe("localhost:8080", server.Mux))
+	server.Logger.Infof("Serving '%s'", config.Current.RootDir)
+	listen := fmt.Sprintf(":%d", config.Current.Port)
+	if config.Current.Debug {
+		listen = fmt.Sprintf("localhost:%d", config.Current.Port)
+	}
+	server.Logger.Fatal(http.ListenAndServe(listen, server.Mux))
 }

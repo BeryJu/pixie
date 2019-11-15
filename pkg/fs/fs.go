@@ -24,7 +24,7 @@ type FileSystem struct {
 // NewFileSystem Initialise new FileSystem
 func NewFileSystem() FileSystem {
 	return FileSystem{
-		Dir:    config.CfgRootDir,
+		Dir:    config.Current.RootDir,
 		Logger: log.WithField("component", "fs"),
 	}
 }

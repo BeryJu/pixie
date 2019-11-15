@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/server"
-
 	"git.beryju.org/BeryJu.org/pixie/pkg/config"
-
+	"git.beryju.org/BeryJu.org/pixie/pkg/server"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -15,15 +13,13 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use: "pixie",
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		if config.CfgDebug {
+		if config.Current.Debug {
 			log.SetLevel(log.DebugLevel)
 		} else {
 			log.SetFormatter(&log.JSONFormatter{})
 		}
-		log.Info("pixie starting on port 8080")
+		log.Infof("pixie starting on port %d", config.Current.Port)
 		server.Run()
 	},
 }
@@ -38,10 +34,11 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&config.CfgRootDir, "root-dir", "r", ".", "Root directory to serve.")
-	rootCmd.PersistentFlags().BoolVar(&config.CfgDebug, "debug", false, "Enable debug-mode.")
-	rootCmd.PersistentFlags().BoolVar(&config.CfgPurgeExifGPS, "purge-exif-gps", true, "Purge GPS-Relateed EXIF metadata.")
-	rootCmd.PersistentFlags().BoolVar(&config.CfgCacheEnabled, "cache-enabled", false, "Enable in-memory cache")
-	rootCmd.PersistentFlags().IntVar(&config.CfgCacheMaxItems, "cache-max-items", 2000, "Maximum Items to cache")
-	rootCmd.PersistentFlags().IntVar(&config.CfgCacheMaxItemSize, "cache-max-item-size", 1024*1024, "Maximum Item size to cache (in bytes).")
+	config.Current = config.Defaults
+	rootCmd.PersistentFlags().StringVarP(&config.Current.RootDir, "root-dir", "r", config.Defaults.RootDir, "Root directory to serve.")
+	rootCmd.PersistentFlags().BoolVar(&config.Current.Debug, "debug", config.Defaults.Debug, "Enable debug-mode.")
+	rootCmd.PersistentFlags().BoolVar(&config.Current.EXIFPurgeGPS, "exif-purge-gps", config.Defaults.EXIFPurgeGPS, "Purge GPS-Related EXIF metadata.")
+	rootCmd.PersistentFlags().BoolVar(&config.Current.CacheEnabled, "cache-enabled", config.Defaults.CacheEnabled, "Enable in-memory cache")
+	rootCmd.PersistentFlags().IntVar(&config.Current.CacheMaxItems, "cache-max-items", config.Defaults.CacheMaxItems, "Maximum Items to cache")
+	rootCmd.PersistentFlags().IntVar(&config.Current.CacheMaxItemSize, "cache-max-item-size", config.Defaults.CacheMaxItemSize, "Maximum Item size to cache (in bytes).")
 }

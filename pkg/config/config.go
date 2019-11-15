@@ -1,19 +1,26 @@
 package config
 
-// CfgRootDir Root directory to serve
-var CfgRootDir string
+// Config Config structure for viper marshalling
+type Config struct {
+	RootDir          string
+	Port             int
+	Debug            bool
+	EXIFPurgeGPS     bool
+	CacheEnabled     bool
+	CacheMaxItems    int
+	CacheMaxItemSize int
+}
 
-// CfgPurgeExifGPS Purge GPS-related EXIF tags from images
-var CfgPurgeExifGPS bool
+// Current Static variable, filled by viper
+var Current Config
 
-// CfgDebug Enable debug mode (verbose logging, etc)
-var CfgDebug bool
-
-// CfgCacheEnabled Enable in-memory cache
-var CfgCacheEnabled bool
-
-// CfgCacheMaxItems Maximum Items to cache
-var CfgCacheMaxItems int
-
-// CfgCacheMaxItemSize Maximum Item size to be cached (bytes)
-var CfgCacheMaxItemSize int
+// Defaults default values
+var Defaults Config = Config{
+	RootDir:          ".",
+	Port:             8080,
+	Debug:            false,
+	EXIFPurgeGPS:     true,
+	CacheEnabled:     false,
+	CacheMaxItems:    2000,
+	CacheMaxItemSize: 1024,
+}

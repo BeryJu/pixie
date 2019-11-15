@@ -6,5 +6,5 @@ macos:
 linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -v -o bin/pixie-linux-amd64
 
-dev:
-	go run
+run:
+	go run -v . -r demo --debug

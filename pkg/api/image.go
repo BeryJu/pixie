@@ -12,9 +12,10 @@ import (
 	"github.com/rwcarlsen/goexif/tiff"
 )
 
+// ImageFileMeta Extends FileMeta with a [string]string map for EXIF attributes
 type ImageFileMeta struct {
 	FileMeta
-	Exif map[string]string `json:"exif"`
+	EXIF map[string]string `json:"exif"`
 }
 
 type walker struct {
@@ -28,12 +29,13 @@ func (w walker) Walk(name exif.FieldName, tag *tiff.Tag) error {
 		log.Debug(err)
 	}
 	stringName := string(name)
-	if config.CfgPurgeExifGPS && !strings.HasPrefix(stringName, "GPS") {
-		w.meta.Exif[stringName] = value
+	if config.Current.EXIFPurgeGPS && !strings.HasPrefix(stringName, "GPS") {
+		w.meta.EXIF[stringName] = value
 	}
 	return nil
 }
 
+// ForFile get meta data for file
 func (fm *ImageFileMeta) ForFile(f http.File) error {
 	err := fm.FileMeta.ForFile(f)
 	if err != nil {
@@ -43,7 +45,7 @@ func (fm *ImageFileMeta) ForFile(f http.File) error {
 	if err != nil {
 		return err
 	}
-	fm.Exif = make(map[string]string)
+	fm.EXIF = make(map[string]string)
 	walker := walker{
 		file: f,
 		meta: fm,
