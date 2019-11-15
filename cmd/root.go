@@ -41,4 +41,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&config.CfgRootDir, "root-dir", "r", ".", "Root directory to serve.")
 	rootCmd.PersistentFlags().BoolVar(&config.CfgDebug, "debug", false, "Enable debug-mode.")
 	rootCmd.PersistentFlags().BoolVar(&config.CfgPurgeExifGPS, "purge-exif-gps", true, "Purge GPS-Relateed EXIF metadata.")
+	rootCmd.PersistentFlags().BoolVar(&config.CfgCacheEnabled, "cache-enabled", false, "Enable in-memory cache")
+	rootCmd.PersistentFlags().IntVar(&config.CfgCacheMaxItems, "cache-max-items", 2000, "Maximum Items to cache")
+	rootCmd.PersistentFlags().IntVar(&config.CfgCacheMaxItemSize, "cache-max-item-size", 1024*1024, "Maximum Item size to cache (in bytes).")
 }

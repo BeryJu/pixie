@@ -3,6 +3,7 @@ module git.beryju.org/BeryJu.org/pixie
 go 1.12
 
 require (
+	github.com/allegro/bigcache v1.2.1
 	github.com/gobuffalo/packr/v2 v2.7.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd

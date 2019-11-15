@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"git.beryju.org/BeryJu.org/pixie/internal"
+	"git.beryju.org/BeryJu.org/pixie/pkg/base"
+	"git.beryju.org/BeryJu.org/pixie/pkg/cache"
 	"git.beryju.org/BeryJu.org/pixie/pkg/config"
 	"git.beryju.org/BeryJu.org/pixie/pkg/fs"
 	log "github.com/sirupsen/logrus"
@@ -18,7 +20,14 @@ type Server struct {
 // NewServer Initialise new HTTP-Server
 func NewServer() *Server {
 	logger := log.WithField("component", "http-server")
-	fsInstance := fs.NewFileSystem()
+	var fsInstance base.FileSystem
+	if config.CfgCacheEnabled {
+		logger.Debug("Using cached filesystem.")
+		fsInstance = cache.NewCachedFileSystem()
+	} else {
+		logger.Debug("Using normal filesystem.")
+		fsInstance = fs.NewFileSystem()
+	}
 	mux := http.NewServeMux()
 	mux.Handle("/", logging(logger)(internal.FileServer(fsInstance)))
 	mux.HandleFunc("/-/ping", Ping)
