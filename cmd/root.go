@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 		} else {
 			log.SetFormatter(&log.JSONFormatter{})
 		}
-		log.Infof("pixie starting on port %d", config.Current.Port)
+		log.Infof("pixie with config %+v", config.Current)
 		server.Run()
 	},
 }
