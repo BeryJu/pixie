@@ -35,10 +35,10 @@ build-linux-amd64:
     - chmod +x bin/pixie-linux-amd64
   only:
     changes:
-      - cmd/
-      - internal/
-      - pkg/
-      - web/
+      - cmd/**/*
+      - internal/**/*
+      - pkg/**/*
+      - web/**/*
   artifacts:
     paths:
       - bin/pixie-linux-amd64
@@ -54,10 +54,10 @@ build-linux-arm64:
     - chmod +x bin/pixie-linux-arm64
   only:
     changes:
-      - cmd/
-      - internal/
-      - pkg/
-      - web/
+      - cmd/**/*
+      - internal/**/*
+      - pkg/**/*
+      - web/**/*
   artifacts:
     paths:
       - bin/pixie-linux-arm64
@@ -72,8 +72,8 @@ build-docker:
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/pixie/server:latest --destination docker.beryju.org/pixie/server:$CI_COMMIT_SHORT_SHA
   only:
     changes:
-      - cmd/
-      - internal/
-      - pkg/
-      - web/
+      - cmd/**/*
+      - internal/**/*
+      - pkg/**/*
+      - web/**/*
       - Dockerfile
