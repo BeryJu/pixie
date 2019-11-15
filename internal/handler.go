@@ -5,12 +5,11 @@ import (
 	"path"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
-
-	"git.beryju.org/BeryJu.org/pixie/pkg/abstract"
 	"git.beryju.org/BeryJu.org/pixie/pkg/api"
+	"git.beryju.org/BeryJu.org/pixie/pkg/base"
 	"git.beryju.org/BeryJu.org/pixie/pkg/constant"
 	"git.beryju.org/BeryJu.org/pixie/pkg/templates"
+	log "github.com/sirupsen/logrus"
 )
 
 // FileServer returns a handler that serves HTTP requests
@@ -24,12 +23,12 @@ import (
 // As a special case, the returned file server redirects any request
 // ending in "/index.html" to the same path, without the final
 // "index.html".
-func FileServer(root abstract.CFileSystem) http.Handler {
+func FileServer(root base.FileSystem) http.Handler {
 	return &fileHandler{root}
 }
 
 type fileHandler struct {
-	root abstract.CFileSystem
+	root base.FileSystem
 }
 
 func (f *fileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +41,7 @@ func (f *fileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // name is '/'-separated, not filepath.Separator.
-func serveFile(w http.ResponseWriter, r *http.Request, fs abstract.CFileSystem, name string, redirect bool) {
+func serveFile(w http.ResponseWriter, r *http.Request, fs base.FileSystem, name string, redirect bool) {
 	// redirect .../index.html to .../
 	// can't use Redirect() because that would make the path absolute,
 	// which would be a problem running under StripPrefix
@@ -119,7 +118,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs abstract.CFileSystem, 
 		if _, ok := r.URL.Query()["json"]; ok {
 			api.HandleDirList(w, r, f)
 		} else {
-			tmpl, err := templates.GetTemplate("gallery.html")
+			galleryTemplate, err := templates.GetTemplate("gallery.html")
 			if err != nil {
 				msg, code := toHTTPError(err)
 				http.Error(w, msg, code)
@@ -129,7 +128,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs abstract.CFileSystem, 
 				msg, code := toHTTPError(err)
 				http.Error(w, msg, code)
 			}
-			tmpl.ServeTemplate(templates.GalleryTemplateContext{
+			galleryTemplate.ServeTemplate(templates.GalleryTemplateContext{
 				RelativePath: stat.Name(),
 			}, w, r)
 		}
@@ -139,7 +138,8 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs abstract.CFileSystem, 
 	// We're sure it's not a directory, check for the ?meta tag
 	if _, ok := r.URL.Query()["meta"]; ok {
 		api.HandleFileMeta(w, r, f)
-	} else {
-		http.ServeContent(w, r, d.Name(), d.ModTime(), f)
+		return
 	}
+
+	f.Serve(w, r)
 }

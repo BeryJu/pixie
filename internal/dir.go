@@ -5,17 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"sort"
-	"strings"
-)
 
-var htmlReplacer = strings.NewReplacer(
-	"&", "&amp;",
-	"<", "&lt;",
-	">", "&gt;",
-	// "&#34;" is shorter than "&quot;".
-	`"`, "&#34;",
-	// "&#39;" is shorter than "&apos;" and apos was not in HTML until HTML5.
-	"'", "&#39;",
+	"git.beryju.org/BeryJu.org/pixie/pkg/utils"
 )
 
 func dirList(w http.ResponseWriter, r *http.Request, f http.File) {
@@ -37,7 +28,7 @@ func dirList(w http.ResponseWriter, r *http.Request, f http.File) {
 		// part of the URL path, and not indicate the start of a query
 		// string or fragment.
 		url := url.URL{Path: name}
-		fmt.Fprintf(w, "<a href=\"%s\">%s</a>\n", url.String(), htmlReplacer.Replace(name))
+		fmt.Fprintf(w, "<a href=\"%s\">%s</a>\n", url.String(), utils.HtmlReplacer.Replace(name))
 	}
 	fmt.Fprintf(w, "</pre>\n")
 }
