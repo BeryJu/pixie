@@ -5,10 +5,14 @@ Usage:
   pixie [flags]
 
 Flags:
-      --debug             Enable debug-mode.
-  -h, --help              help for pixie
-      --purge-exif-gps    Purge GPS-Relateed EXIF metadata. (default true)
-  -r, --root-dir string   Root directory to serve. (default ".")
+      --cache-enabled             Enable in-memory cache
+      --cache-eviction int        Time after which entry can be evicted (in minutes). (default 10)
+      --cache-max-item-size int   Maximum Item size to cache (in bytes). (default 500)
+      --cache-max-size int        Maximum Cache size in MB (0 disables the limit).
+      --debug                     Enable debug-mode.
+      --exif-purge-gps            Purge GPS-Related EXIF metadata. (default true)
+  -h, --help                      help for pixie
+  -r, --root-dir string           Root directory to serve. (default ".")
 ```
 
 Demo: https://i.beryju.org/pixie-demo/
@@ -30,7 +34,7 @@ Now you can access pixie on http://localhost:8080
 Download a binary from [GitLab](https://git.beryju.org/BeryJu.org/pixie/pipelines) and run it:
 
 ```
-./pixie -r=/data
+./pixie -r /data
 ```
 
 Now you can access pixie on http://localhost:8080

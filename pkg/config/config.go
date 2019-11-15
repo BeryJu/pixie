@@ -7,7 +7,8 @@ type Config struct {
 	Debug            bool
 	EXIFPurgeGPS     bool
 	CacheEnabled     bool
-	CacheMaxItems    int
+	CacheEviction    int
+	CacheMaxSize     int
 	CacheMaxItemSize int
 }
 
@@ -21,6 +22,7 @@ var Defaults Config = Config{
 	Debug:            false,
 	EXIFPurgeGPS:     true,
 	CacheEnabled:     false,
-	CacheMaxItems:    2000,
-	CacheMaxItemSize: 1024,
+	CacheEviction:    10,
+	CacheMaxSize:     0,
+	CacheMaxItemSize: 500,
 }

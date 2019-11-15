@@ -33,7 +33,6 @@ func NewFileSystem() FileSystem {
 // that serves a 403 permission error when name has a file or directory
 // with whose name starts with a period in its path.
 func (fs FileSystem) Open(name string) (base.ServingFile, error) {
-	fs.Logger.Debug("Open")
 	if utils.ContainsDotFile(name) { // If dot file, return 403 response
 		return nil, os.ErrPermission
 	}

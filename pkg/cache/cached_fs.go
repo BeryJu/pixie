@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"git.beryju.org/BeryJu.org/pixie/pkg/base"
+	"git.beryju.org/BeryJu.org/pixie/pkg/config"
 	"git.beryju.org/BeryJu.org/pixie/pkg/fs"
 	"git.beryju.org/BeryJu.org/pixie/pkg/utils"
 	"github.com/allegro/bigcache"
@@ -30,11 +31,9 @@ func NewCachedFileSystem() CachedFileSystem {
 		Dir:    fs.NewFileSystem().Dir,
 		Logger: log.WithField("component", "cached-fs"),
 	}
-	cacheConfig := bigcache.DefaultConfig(10 * time.Minute)
-	// cacheConfig.MaxEntrySize = config.CfgCacheMaxItemSize
-	// cacheConfig.HardMaxCacheSize = config.CfgCacheMaxItemSize / 1024
-	// cfs.Logger.Debug(cacheConfig.MaxEntrySize)
-	// cfs.Logger.Debug(cacheConfig.HardMaxCacheSize)
+	cacheConfig := bigcache.DefaultConfig(time.Duration(config.Current.CacheEviction) * time.Minute)
+	cacheConfig.MaxEntrySize = config.Current.CacheMaxItemSize
+	cacheConfig.HardMaxCacheSize = config.Current.CacheMaxSize
 	cache, err := bigcache.NewBigCache(cacheConfig)
 	if err != nil {
 		cfs.Logger.Warning(err)

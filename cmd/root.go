@@ -35,10 +35,11 @@ func Execute() {
 
 func init() {
 	config.Current = config.Defaults
-	rootCmd.PersistentFlags().StringVarP(&config.Current.RootDir, "root-dir", "r", config.Defaults.RootDir, "Root directory to serve.")
-	rootCmd.PersistentFlags().BoolVar(&config.Current.Debug, "debug", config.Defaults.Debug, "Enable debug-mode.")
-	rootCmd.PersistentFlags().BoolVar(&config.Current.EXIFPurgeGPS, "exif-purge-gps", config.Defaults.EXIFPurgeGPS, "Purge GPS-Related EXIF metadata.")
+	rootCmd.PersistentFlags().StringVarP(&config.Current.RootDir, "root-dir", "r", config.Defaults.RootDir, "Root directory to serve")
+	rootCmd.PersistentFlags().BoolVar(&config.Current.Debug, "debug", config.Defaults.Debug, "Enable debug-mode")
+	rootCmd.PersistentFlags().BoolVar(&config.Current.EXIFPurgeGPS, "exif-purge-gps", config.Defaults.EXIFPurgeGPS, "Purge GPS-Related EXIF metadata")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.CacheEnabled, "cache-enabled", config.Defaults.CacheEnabled, "Enable in-memory cache")
-	rootCmd.PersistentFlags().IntVar(&config.Current.CacheMaxItems, "cache-max-items", config.Defaults.CacheMaxItems, "Maximum Items to cache")
-	rootCmd.PersistentFlags().IntVar(&config.Current.CacheMaxItemSize, "cache-max-item-size", config.Defaults.CacheMaxItemSize, "Maximum Item size to cache (in bytes).")
+	rootCmd.PersistentFlags().IntVar(&config.Current.CacheEviction, "cache-eviction", config.Defaults.CacheEviction, "Time after which entry can be evicted (in minutes)")
+	rootCmd.PersistentFlags().IntVar(&config.Current.CacheMaxSize, "cache-max-size", config.Defaults.CacheMaxSize, "Maximum Cache size in MB (0 disables the limit)")
+	rootCmd.PersistentFlags().IntVar(&config.Current.CacheMaxItemSize, "cache-max-item-size", config.Defaults.CacheMaxItemSize, "Maximum Item size to cache (in bytes)")
 }
