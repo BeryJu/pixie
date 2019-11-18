@@ -6,6 +6,7 @@ import "os"
 type Config struct {
 	RootDir          string
 	Port             int
+	Silent           bool
 	Debug            bool
 	EXIFPurgeGPS     bool
 	CacheEnabled     bool
@@ -22,6 +23,7 @@ var Defaults Config = Config{
 	RootDir:          getCwd(),
 	Port:             8080,
 	Debug:            false,
+	Silent:           false,
 	EXIFPurgeGPS:     true,
 	CacheEnabled:     false,
 	CacheEviction:    10,

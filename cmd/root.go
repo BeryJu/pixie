@@ -37,6 +37,7 @@ func init() {
 	config.Current = config.Defaults
 	rootCmd.PersistentFlags().StringVarP(&config.Current.RootDir, "root-dir", "r", config.Defaults.RootDir, "Root directory to serve")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.Debug, "debug", config.Defaults.Debug, "Enable debug-mode")
+	rootCmd.PersistentFlags().BoolVar(&config.Current.Silent, "silent", config.Defaults.Silent, "Enable silent mode (no access logs)")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.EXIFPurgeGPS, "exif-purge-gps", config.Defaults.EXIFPurgeGPS, "Purge GPS-Related EXIF metadata")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.CacheEnabled, "cache-enabled", config.Defaults.CacheEnabled, "Enable in-memory cache")
 	rootCmd.PersistentFlags().IntVar(&config.Current.CacheEviction, "cache-eviction", config.Defaults.CacheEviction, "Time after which entry can be evicted (in minutes)")
