@@ -2,7 +2,7 @@
 
 ```
 Usage:
-  pixie [flags]
+  pixie [directory to serve] [flags]
 
 Flags:
       --cache-enabled             Enable in-memory cache
@@ -12,7 +12,6 @@ Flags:
       --debug                     Enable debug-mode
       --exif-purge-gps            Purge GPS-Related EXIF metadata (default true)
   -h, --help                      help for pixie
-  -r, --root-dir string           Root directory to serve (default "`cwd`")
       --silent                    Enable silent mode (no access logs)
 ```
 
@@ -25,7 +24,7 @@ Demo: https://i.beryju.org/pixie-demo/
 Run the container like this:
 
 ```
-docker run -v "whatever directory you want to share":/data docker.beryju.org/pixie/server:latest -r /data
+docker run -v "whatever directory you want to share":/data docker.beryju.org/pixie/server:latest /data
 ```
 
 Now you can access pixie on http://localhost:8080
@@ -35,7 +34,7 @@ Now you can access pixie on http://localhost:8080
 Download a binary from [GitLab](https://git.beryju.org/BeryJu.org/pixie/pipelines) and run it:
 
 ```
-./pixie -r /data
+./pixie /data
 ```
 
 Now you can access pixie on http://localhost:8080

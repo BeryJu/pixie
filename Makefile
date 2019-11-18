@@ -30,4 +30,4 @@ linux-arm64:
 	go build -ldflags "-s -w" -v -o bin/pixie-linux-arm64
 
 run:
-	go run -v . -r demo --debug
+	go run -v . demo --debug

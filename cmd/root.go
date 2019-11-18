@@ -12,12 +12,17 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use: "pixie",
+	Use: "pixie [directory to serve]",
 	Run: func(cmd *cobra.Command, args []string) {
 		if config.Current.Debug {
 			log.SetLevel(log.DebugLevel)
 		} else {
 			log.SetFormatter(&log.JSONFormatter{})
+		}
+		if len(args) < 1 {
+			log.Infof("No root-directory given, defaulting to Working Directory of %s", config.Current.RootDir)
+		} else {
+			config.Current.RootDir = args[0]
 		}
 		log.Infof("pixie with config %+v", config.Current)
 		server.Run()
@@ -35,7 +40,6 @@ func Execute() {
 
 func init() {
 	config.Current = config.Defaults
-	rootCmd.PersistentFlags().StringVarP(&config.Current.RootDir, "root-dir", "r", config.Defaults.RootDir, "Root directory to serve")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.Debug, "debug", config.Defaults.Debug, "Enable debug-mode")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.Silent, "silent", config.Defaults.Silent, "Enable silent mode (no access logs)")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.EXIFPurgeGPS, "exif-purge-gps", config.Defaults.EXIFPurgeGPS, "Purge GPS-Related EXIF metadata")

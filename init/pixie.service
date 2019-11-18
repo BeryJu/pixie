@@ -7,7 +7,7 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 User=nobody
-ExecStart=/opt/pixie -r /opt/data
+ExecStart=/opt/pixie /opt/data
 
 [Install]
 WantedBy=multi-user.target
