@@ -14,25 +14,17 @@ stages:
 test:
   stage: test
   script:
-    - go test
+    - make test
 
 lint:
   stage: test
   script:
-    - go get golang.org/x/lint/golint
-    - golint
+    - make lint
 
 build-linux-amd64:
   stage: build
-  variables:
-    GOOS: linux
-    GOARCH: amd64
-    CGO_ENABLED: "0"
   script:
-    - go get github.com/gobuffalo/packr/v2/packr2
-    - packr2
-    - go build -v -o bin/pixie-linux-amd64
-    - chmod +x bin/pixie-linux-amd64
+    - make linux-amd64
   only:
     changes:
       - cmd/**/*
@@ -44,14 +36,8 @@ build-linux-amd64:
       - bin/pixie-linux-amd64
 build-linux-arm64:
   stage: build
-  variables:
-    GOOS: linux
-    CGO_ENABLED: "0"
   script:
-    - go get github.com/gobuffalo/packr/v2/packr2
-    - packr2
-    - GOARCH=arm64 go build -v -o bin/pixie-linux-arm64
-    - chmod +x bin/pixie-linux-arm64
+    - make linux-arm64
   only:
     changes:
       - cmd/**/*

@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 // Config Config structure for viper marshalling
 type Config struct {
 	RootDir          string
@@ -17,7 +19,7 @@ var Current Config
 
 // Defaults default values
 var Defaults Config = Config{
-	RootDir:          ".",
+	RootDir:          getCwd(),
 	Port:             8080,
 	Debug:            false,
 	EXIFPurgeGPS:     true,
@@ -25,4 +27,12 @@ var Defaults Config = Config{
 	CacheEviction:    10,
 	CacheMaxSize:     0,
 	CacheMaxItemSize: 500,
+}
+
+func getCwd() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		return "."
+	}
+	return dir
 }
