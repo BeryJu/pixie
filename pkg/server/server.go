@@ -30,7 +30,7 @@ func NewServer() *Server {
 		fsInstance = standard.NewFileSystem()
 	}
 	mux := http.NewServeMux()
-	mux.Handle("/", (internal.FileServer(fsInstance)))
+	mux.Handle("/", logging(logger)(internal.FileServer(fsInstance)))
 	mux.HandleFunc("/-/ping", Ping)
 	return &Server{
 		Logger: logger,
