@@ -16,18 +16,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// CachedFileSystem is an http.FileSystem that hides
+// FileSystem is an http.FileSystem that hides
 // hidden "dot files" from being served.
-type CachedFileSystem struct {
+type FileSystem struct {
 	base.FileSystem
 	Dir    string
 	Cache  *bigcache.BigCache
 	Logger *log.Entry
 }
 
-// NewCachedFileSystem Initialise new Cached Filesystem
-func NewCachedFileSystem() CachedFileSystem {
-	cfs := CachedFileSystem{
+// NewFileSystem Initialise new Cached Filesystem
+func NewFileSystem() FileSystem {
+	cfs := FileSystem{
 		Dir:    standard.NewFileSystem().Dir,
 		Logger: log.WithField("component", "cached-fs"),
 	}
@@ -45,7 +45,7 @@ func NewCachedFileSystem() CachedFileSystem {
 // Open is a wrapper around the Open method of the embedded FileSystem
 // that serves a 403 permission error when name has a file or directory
 // with whose name starts with a period in its path.
-func (cfs CachedFileSystem) Open(name string) (base.ServingFile, error) {
+func (cfs FileSystem) Open(name string) (base.ServingFile, error) {
 	if utils.ContainsDotFile(name) { // If dot file, return 403 response
 		return nil, os.ErrPermission
 	}
@@ -58,28 +58,26 @@ func (cfs CachedFileSystem) Open(name string) (base.ServingFile, error) {
 		dir = "."
 	}
 	fullName := filepath.Join(dir, filepath.FromSlash(path.Clean("/"+name)))
-	f, err := os.Open(fullName)
-	if err != nil {
-		return nil, utils.MapDirOpenError(err, fullName)
-	}
-	return CachedFile{
-		File: standard.File{
-			File: f,
-		},
+	return File{
 		Key: fullName,
 		FS:  cfs,
 	}, nil
 }
 
 // GetCacheFallback Wrapper around bigcache.Get and Set
-func (cfs CachedFileSystem) GetCacheFallback(key string, fallback func() ([]byte, error)) ([]byte, error) {
+func (cfs FileSystem) GetCacheFallback(key string, populate func() ([]byte, error)) ([]byte, error) {
 	ret, err := cfs.Cache.Get(key)
 	if err == bigcache.ErrEntryNotFound {
-		ret, err := fallback()
+		cfs.Logger.Debug("Entry not found, calling populate()")
+		realValue, err := populate()
 		if err != nil {
-			return nil, errors.Wrap(err, "Error executing CacheGet fallback")
+			return nil, errors.Wrap(err, "Error executing CacheGet populate")
 		}
-		cfs.Cache.Set(key, ret)
+		err = cfs.Cache.Set(key, realValue)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error during CacheSet")
+		}
+		return realValue, nil
 	} else if err != nil {
 		return nil, errors.Wrap(err, "Error during CacheGet")
 	}

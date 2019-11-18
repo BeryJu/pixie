@@ -24,7 +24,7 @@ func NewServer() *Server {
 	var fsInstance base.FileSystem
 	if config.Current.CacheEnabled {
 		logger.Debug("Using cached filesystem.")
-		fsInstance = cached.NewCachedFileSystem()
+		fsInstance = cached.NewFileSystem()
 	} else {
 		logger.Debug("Using normal filesystem.")
 		fsInstance = standard.NewFileSystem()

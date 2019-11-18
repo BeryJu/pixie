@@ -6,26 +6,26 @@ import (
 )
 
 type Stat struct {
-	name    string
-	size    int64
-	modTime time.Time
-	mode    os.FileMode
+	NameField    string
+	SizeField    int64
+	ModTimeField time.Time
+	ModeField    os.FileMode
 }
 
 func (s Stat) Name() string {
-	return s.name
+	return s.NameField
 }
 
 func (s Stat) Size() int64 {
-	return s.size
+	return s.SizeField
 }
 
 func (s Stat) Mode() os.FileMode {
-	return s.mode
+	return s.ModeField
 }
 
 func (s Stat) ModTime() time.Time {
-	return s.modTime
+	return s.ModTimeField
 }
 
 func (s Stat) IsDir() bool {

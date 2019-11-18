@@ -7,25 +7,26 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/pkg/errors"
+
 	"git.beryju.org/BeryJu.org/pixie/pkg/fs/standard"
 )
 
-// CachedFile Same as fs.File, but cache contents in memory
-type CachedFile struct {
-	standard.File
+// File Same as fs.File, but cache contents in memory
+type File struct {
+	*standard.File
 	Key  string
-	FS   CachedFileSystem
+	FS   FileSystem
 	stat *Stat
 }
 
 // Serve Write cached contents to http response
-func (cf CachedFile) Serve(w http.ResponseWriter, r *http.Request) {
+func (cf File) Serve(w http.ResponseWriter, r *http.Request) {
 	p, err := cf.FS.GetCacheFallback("", func() ([]byte, error) {
 		cf.FS.Logger.Debug("File not in Cache, reading from disk")
-		buffer, err := ioutil.ReadAll(cf.File)
+		buffer, err := ioutil.ReadAll(cf.openFileIfNeeded())
 		if err != nil {
-			cf.FS.Logger.Warningf("ReadAll Err: %s", err)
-			return nil, err
+			return nil, errors.Wrap(err, "ReadAll Error")
 		}
 		return buffer, nil
 	})
@@ -43,39 +44,59 @@ func (cf CachedFile) Serve(w http.ResponseWriter, r *http.Request) {
 }
 
 // Readdir Wrapper around fs.File.Readdir
-func (cf CachedFile) Readdir(n int) (fis []os.FileInfo, err error) {
-	return cf.File.Readdir(n)
+func (cf File) Readdir(n int) (fis []os.FileInfo, err error) {
+	return cf.openFileIfNeeded().Readdir(n)
+}
+
+// Close Close actual file if we needed it
+func (cf File) Close() error {
+	if cf.File != nil {
+		return cf.File.Close()
+	}
+	return nil
 }
 
 // Stat Cached wrapper around os.File.Stat()
-func (cf CachedFile) Stat() (os.FileInfo, error) {
+func (cf File) Stat() (os.FileInfo, error) {
 	if cf.stat != nil {
 		return cf.stat, nil
 	}
 	statByte, err := cf.FS.GetCacheFallback("stat-"+cf.Key, func() ([]byte, error) {
-		stats, err := cf.File.Stat()
+		stats, err := cf.openFileIfNeeded().Stat()
 		if err != nil {
-			cf.FS.Logger.Warningf("Stat Err: %s", err)
-			return nil, err
+			return nil, errors.Wrap(err, "Stat Error (reading into cache)")
 		}
-		marshalled, err := json.Marshal(Stat{
-			name:    stats.Name(),
-			modTime: stats.ModTime(),
-			size:    stats.Size(),
-			mode:    stats.Mode(),
-		})
+		stat := &Stat{
+			NameField:    stats.Name(),
+			ModTimeField: stats.ModTime(),
+			SizeField:    stats.Size(),
+			ModeField:    stats.Mode(),
+		}
+		marshalled, err := json.Marshal(stat)
 		if err != nil {
-			cf.FS.Logger.Warningf("JSON Marshal: %s", err)
-			return nil, err
+			return nil, errors.Wrap(err, "JSON marshalling into cache")
 		}
 		return marshalled, nil
 	})
 	if err != nil {
-		cf.FS.Logger.Debug(err)
+		cf.FS.Logger.Warning(err)
 	}
 	err = json.Unmarshal(statByte, &cf.stat)
 	if err != nil {
 		cf.FS.Logger.Warning(err)
 	}
 	return cf.stat, nil
+}
+
+func (cf File) openFileIfNeeded() *standard.File {
+	if cf.File == nil {
+		f, err := os.Open(cf.Key)
+		if err != nil {
+			cf.FS.Logger.Warning("test")
+		}
+		cf.File = &standard.File{
+			File: f,
+		}
+	}
+	return cf.File
 }
