@@ -1,18 +1,18 @@
-package cache
+package cached
 
 import (
-	"errors"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/base"
 	"git.beryju.org/BeryJu.org/pixie/pkg/config"
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs"
+	"git.beryju.org/BeryJu.org/pixie/pkg/fs/base"
+	"git.beryju.org/BeryJu.org/pixie/pkg/fs/standard"
 	"git.beryju.org/BeryJu.org/pixie/pkg/utils"
 	"github.com/allegro/bigcache"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -28,7 +28,7 @@ type CachedFileSystem struct {
 // NewCachedFileSystem Initialise new Cached Filesystem
 func NewCachedFileSystem() CachedFileSystem {
 	cfs := CachedFileSystem{
-		Dir:    fs.NewFileSystem().Dir,
+		Dir:    standard.NewFileSystem().Dir,
 		Logger: log.WithField("component", "cached-fs"),
 	}
 	cacheConfig := bigcache.DefaultConfig(time.Duration(config.Current.CacheEviction) * time.Minute)
@@ -63,10 +63,25 @@ func (cfs CachedFileSystem) Open(name string) (base.ServingFile, error) {
 		return nil, utils.MapDirOpenError(err, fullName)
 	}
 	return CachedFile{
-		File: fs.File{
+		File: standard.File{
 			File: f,
 		},
 		Key: fullName,
 		FS:  cfs,
 	}, nil
+}
+
+// GetCacheFallback Wrapper around bigcache.Get and Set
+func (cfs CachedFileSystem) GetCacheFallback(key string, fallback func() ([]byte, error)) ([]byte, error) {
+	ret, err := cfs.Cache.Get(key)
+	if err == bigcache.ErrEntryNotFound {
+		ret, err := fallback()
+		if err != nil {
+			return nil, errors.Wrap(err, "Error executing CacheGet fallback")
+		}
+		cfs.Cache.Set(key, ret)
+	} else if err != nil {
+		return nil, errors.Wrap(err, "Error during CacheGet")
+	}
+	return ret, nil
 }

@@ -1,4 +1,4 @@
-package fs
+package standard
 
 import (
 	"errors"
@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/base"
 	"git.beryju.org/BeryJu.org/pixie/pkg/config"
+	"git.beryju.org/BeryJu.org/pixie/pkg/fs/base"
 	"git.beryju.org/BeryJu.org/pixie/pkg/utils"
 	log "github.com/sirupsen/logrus"
 )

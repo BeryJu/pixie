@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"git.beryju.org/BeryJu.org/pixie/internal"
-	"git.beryju.org/BeryJu.org/pixie/pkg/base"
-	"git.beryju.org/BeryJu.org/pixie/pkg/cache"
 	"git.beryju.org/BeryJu.org/pixie/pkg/config"
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs"
+	"git.beryju.org/BeryJu.org/pixie/pkg/fs/base"
+	"git.beryju.org/BeryJu.org/pixie/pkg/fs/cached"
+	"git.beryju.org/BeryJu.org/pixie/pkg/fs/standard"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,13 +24,13 @@ func NewServer() *Server {
 	var fsInstance base.FileSystem
 	if config.Current.CacheEnabled {
 		logger.Debug("Using cached filesystem.")
-		fsInstance = cache.NewCachedFileSystem()
+		fsInstance = cached.NewCachedFileSystem()
 	} else {
 		logger.Debug("Using normal filesystem.")
-		fsInstance = fs.NewFileSystem()
+		fsInstance = standard.NewFileSystem()
 	}
 	mux := http.NewServeMux()
-	mux.Handle("/", logging(logger)(internal.FileServer(fsInstance)))
+	mux.Handle("/", (internal.FileServer(fsInstance)))
 	mux.HandleFunc("/-/ping", Ping)
 	return &Server{
 		Logger: logger,

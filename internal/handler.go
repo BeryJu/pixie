@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"git.beryju.org/BeryJu.org/pixie/pkg/api"
-	"git.beryju.org/BeryJu.org/pixie/pkg/base"
 	"git.beryju.org/BeryJu.org/pixie/pkg/constant"
+	"git.beryju.org/BeryJu.org/pixie/pkg/fs/base"
 	"git.beryju.org/BeryJu.org/pixie/pkg/templates"
 	log "github.com/sirupsen/logrus"
 )

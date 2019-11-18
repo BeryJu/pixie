@@ -1,4 +1,4 @@
-package fs
+package standard
 
 import (
 	"net/http"
