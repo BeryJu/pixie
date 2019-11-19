@@ -34,6 +34,7 @@ func NewFileSystem() FileSystem {
 	cacheConfig := bigcache.DefaultConfig(time.Duration(config.Current.CacheEviction) * time.Minute)
 	cacheConfig.MaxEntrySize = config.Current.CacheMaxItemSize
 	cacheConfig.HardMaxCacheSize = config.Current.CacheMaxSize
+	cacheConfig.Logger = cfs.Logger
 	cache, err := bigcache.NewBigCache(cacheConfig)
 	if err != nil {
 		cfs.Logger.Warning(err)
@@ -68,7 +69,7 @@ func (cfs FileSystem) Open(name string) (base.ServingFile, error) {
 func (cfs FileSystem) GetCacheFallback(key string, populate func() ([]byte, error)) ([]byte, error) {
 	ret, err := cfs.Cache.Get(key)
 	if err == bigcache.ErrEntryNotFound {
-		cfs.Logger.Debug("Entry not found, calling populate()")
+		cfs.Logger.WithField("key", key).Debug("Entry not found, calling populate()")
 		realValue, err := populate()
 		if err != nil {
 			return nil, errors.Wrap(err, "Error executing CacheGet populate")

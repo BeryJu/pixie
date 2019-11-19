@@ -43,7 +43,7 @@ func (fm *FileMeta) ForFile(f http.File) error {
 			return err
 		}
 	} else {
-		log.Debugf("Skipping content-type check for %s because file is less than 512 bytes", stat.Name())
+		log.Debugf("Skipping content-type check for %s because file is more than 512 bytes", stat.Name())
 	}
 	fm.Name = stat.Name()
 	fm.Size = stat.Size()

@@ -22,8 +22,8 @@ type File struct {
 
 // Serve Write cached contents to http response
 func (cf File) Serve(w http.ResponseWriter, r *http.Request) {
-	p, err := cf.FS.GetCacheFallback("", func() ([]byte, error) {
-		cf.FS.Logger.Debug("File not in Cache, reading from disk")
+	p, err := cf.FS.GetCacheFallback(cf.Key, func() ([]byte, error) {
+		cf.FS.Logger.WithField("name", cf.Key).Debug("File not in Cache, reading from disk")
 		buffer, err := ioutil.ReadAll(cf.openFileIfNeeded())
 		if err != nil {
 			return nil, errors.Wrap(err, "ReadAll Error")
@@ -37,6 +37,7 @@ func (cf File) Serve(w http.ResponseWriter, r *http.Request) {
 
 	d, err := cf.Stat()
 	if err != nil {
+		// http.Error
 		cf.FS.Logger.Warning(err)
 	} else {
 		http.ServeContent(w, r, d.Name(), d.ModTime(), re)
@@ -79,11 +80,11 @@ func (cf File) Stat() (os.FileInfo, error) {
 		return marshalled, nil
 	})
 	if err != nil {
-		cf.FS.Logger.Warning(err)
+		return nil, errors.Wrap(err, "Failed to populate Cache for Stat")
 	}
 	err = json.Unmarshal(statByte, &cf.stat)
 	if err != nil {
-		cf.FS.Logger.Warning(err)
+		return nil, errors.Wrap(err, "Failed to unmarshal JSON")
 	}
 	return cf.stat, nil
 }
@@ -92,7 +93,7 @@ func (cf File) openFileIfNeeded() *standard.File {
 	if cf.File == nil {
 		f, err := os.Open(cf.Key)
 		if err != nil {
-			cf.FS.Logger.Warning("test")
+			cf.FS.Logger.Warning(err)
 		}
 		cf.File = &standard.File{
 			File: f,
