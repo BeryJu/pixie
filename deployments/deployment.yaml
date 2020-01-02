@@ -3,17 +3,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: pixie
+    app.kubernetes.io/name: pixie
   name: pixie
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: pixie
+      app.kubernetes.io/name: pixie
   template:
     metadata:
       labels:
-        k8s-app: pixie
+        app.kubernetes.io/name: pixie
     spec:
       volumes:
         - name: storage

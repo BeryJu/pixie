@@ -5,7 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
   labels:
-    k8s-app: pixie
+    app.kubernetes.io/name: pixie
   name: pixie
 spec:
   rules:
