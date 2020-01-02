@@ -24,7 +24,7 @@ spec:
             - /data/images/
           command:
             - /pixie
-          image: docker.beryju.org/jens/pixie:pre2
+          image: beryju/pixie:latest-amd64
           imagePullPolicy: Always
           name: pixie
           ports:
