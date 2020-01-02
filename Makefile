@@ -1,11 +1,13 @@
 all: macos
 
+GOPATH := $(shell go env GOPATH)
+
 test:
 	go test
 
 lint:
 	go get golang.org/x/lint/golint
-	golint
+	$(GOPATH)/bin/golint
 
 macos:
 	export CGO_ENABLED=0
@@ -15,7 +17,7 @@ macos:
 
 linux-amd64:
 	go get github.com/gobuffalo/packr/v2/packr2
-	packr2
+	$(GOPATH)/bin/packr2
 	export CGO_ENABLED=0
 	export GOOS=darwin
 	export GOARCH=amd64
@@ -23,7 +25,7 @@ linux-amd64:
 
 linux-arm64:
 	go get github.com/gobuffalo/packr/v2/packr2
-	packr2
+	$(GOPATH)/bin/packr2
 	export CGO_ENABLED=0
 	export GOOS=darwin
 	export GOARCH=arm64
