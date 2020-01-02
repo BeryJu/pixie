@@ -1,0 +1,43 @@
+on:
+  - push
+name: pixie-build
+
+jobs:
+  build-binary:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - arm64
+    name: Build Binary for ${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup go
+        uses: actions/setup-go@v1
+      - run: make linux-${{ matrix.arch }}
+  build-docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - arm64
+    name: Build Docker image for ${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@master
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: |
+          cd gatekeeper
+          docker build \
+          --no-cache \
+          -e GOARCH=${{ matrix.arch }}
+          -t beryju/pixie:latest \
+          -f Dockerfile .
+      - name: Push Docker Container to Registry (latest)
+        run: docker push beryju/passbook-gatekeeper:latest
