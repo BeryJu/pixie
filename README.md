@@ -24,14 +24,14 @@ Demo: https://i.beryju.org/pixie-demo/
 Run the container like this:
 
 ```
-docker run -v "whatever directory you want to share":/data docker.beryju.org/pixie/server:latest /data
+docker run -v "whatever directory you want to share":/data -w /data beryju/pixie:latest-amd64
 ```
 
 Now you can access pixie on http://localhost:8080
 
 ### Binary
 
-Download a binary from [GitLab](https://github.com/BeryJu/pixie/pipelines) and run it:
+Download a binary from [GitHub](https://github.com/BeryJu/pixie/releases) and run it:
 
 ```
 ./pixie /data
