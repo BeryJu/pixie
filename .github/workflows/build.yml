@@ -34,7 +34,7 @@ jobs:
           asset_path: bin/pixie-linux-amd64
           asset_name: pixie-linux-amd64
           asset_content_type: application/octet-stream
-      - run: make linux-amd64
+      - run: make linux-arm64
       - name: Upload binary
         uses: actions/upload-release-asset@v1.0.1
         env:
