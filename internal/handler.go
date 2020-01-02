@@ -5,6 +5,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/BeryJu/pixie/pkg/config"
+
 	"github.com/BeryJu/pixie/pkg/api"
 	"github.com/BeryJu/pixie/pkg/constant"
 	"github.com/BeryJu/pixie/pkg/fs/base"
@@ -50,10 +52,15 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs base.FileSystem, name 
 		return
 	}
 
+	// Let's try to just open the requested file
 	f, err := fs.Open(name)
 	if err != nil {
 		log.Debug(err)
 		msg, code := toHTTPError(err)
+		if code == 404 && config.Current.SPAMode {
+			serveFile(w, r, fs, constant.IndexPageFileName, redirect)
+			return
+		}
 		http.Error(w, msg, code)
 		return
 	}

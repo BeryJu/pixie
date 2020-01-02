@@ -13,6 +13,7 @@ type Config struct {
 	CacheEviction    int
 	CacheMaxSize     int
 	CacheMaxItemSize int
+	SPAMode          bool
 }
 
 // Current Static variable, filled by viper
@@ -29,6 +30,7 @@ var Defaults Config = Config{
 	CacheEviction:    10,
 	CacheMaxSize:     0,
 	CacheMaxItemSize: 500,
+	SPAMode:          false,
 }
 
 func getCwd() string {

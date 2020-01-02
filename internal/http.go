@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // condResult is the result of an HTTP request precondition check.
@@ -51,7 +49,6 @@ func localRedirect(w http.ResponseWriter, r *http.Request, newPath string) {
 // and historically Go's ServeContent always returned just "404 Not Found" for
 // all errors. We don't want to start leaking information in error messages.
 func toHTTPError(err error) (msg string, httpStatus int) {
-	log.Debug(err)
 	if os.IsNotExist(err) {
 		return "404 page not found", http.StatusNotFound
 	}

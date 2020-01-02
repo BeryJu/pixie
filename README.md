@@ -25,6 +25,7 @@ Flags:
       --exif-purge-gps            Purge GPS-Related EXIF metadata (default true)
   -h, --help                      help for pixie
       --silent                    Enable silent mode (no access logs)
+      --spa-mode                  Enable SPA-mode (redirect all requests to missing files to /index.html
 ```
 
 ### Docker

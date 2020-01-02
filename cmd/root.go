@@ -41,6 +41,7 @@ func Execute() {
 func init() {
 	config.Current = config.Defaults
 	rootCmd.PersistentFlags().BoolVar(&config.Current.Debug, "debug", config.Defaults.Debug, "Enable debug-mode")
+	rootCmd.PersistentFlags().BoolVar(&config.Current.SPAMode, "spa-mode", config.Defaults.SPAMode, "Enable SPA-mode (redirect all requests to missing files to /index.html")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.Silent, "silent", config.Defaults.Silent, "Enable silent mode (no access logs)")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.EXIFPurgeGPS, "exif-purge-gps", config.Defaults.EXIFPurgeGPS, "Purge GPS-Related EXIF metadata")
 	rootCmd.PersistentFlags().BoolVar(&config.Current.CacheEnabled, "cache-enabled", config.Defaults.CacheEnabled, "Enable in-memory cache")
