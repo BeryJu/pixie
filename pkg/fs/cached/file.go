@@ -9,7 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs/standard"
+	"github.com/BeryJu/pixie/pkg/fs/standard"
 )
 
 // File Same as fs.File, but cache contents in memory

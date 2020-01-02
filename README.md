@@ -31,7 +31,7 @@ Now you can access pixie on http://localhost:8080
 
 ### Binary
 
-Download a binary from [GitLab](https://git.beryju.org/BeryJu.org/pixie/pipelines) and run it:
+Download a binary from [GitLab](https://github.com/BeryJu/pixie/pipelines) and run it:
 
 ```
 ./pixie /data

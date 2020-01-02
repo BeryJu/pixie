@@ -1,5 +1,5 @@
 FROM golang:latest AS builder
-WORKDIR $GOPATH/src/git.beryju.org/BeryJu.org/pixie
+WORKDIR $GOPATH/src/github.com/BeryJu/pixie
 COPY . .
 ENV CGO_ENABLED=0
 ENV GOOS=linux

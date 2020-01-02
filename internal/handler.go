@@ -5,10 +5,10 @@ import (
 	"path"
 	"strings"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/api"
-	"git.beryju.org/BeryJu.org/pixie/pkg/constant"
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs/base"
-	"git.beryju.org/BeryJu.org/pixie/pkg/templates"
+	"github.com/BeryJu/pixie/pkg/api"
+	"github.com/BeryJu/pixie/pkg/constant"
+	"github.com/BeryJu/pixie/pkg/fs/base"
+	"github.com/BeryJu/pixie/pkg/templates"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -5,4 +5,4 @@
 // and any other packr generated files.
 package templates
 
-import _ "git.beryju.org/BeryJu.org/pixie/packrd"
+import _ "github.com/BeryJu/pixie/packrd"

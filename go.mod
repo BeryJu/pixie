@@ -1,4 +1,4 @@
-module git.beryju.org/BeryJu.org/pixie
+module github.com/BeryJu/pixie
 
 go 1.12
 

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"git.beryju.org/BeryJu.org/pixie/internal"
-	"git.beryju.org/BeryJu.org/pixie/pkg/config"
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs/base"
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs/cached"
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs/standard"
+	"github.com/BeryJu/pixie/internal"
+	"github.com/BeryJu/pixie/pkg/config"
+	"github.com/BeryJu/pixie/pkg/fs/base"
+	"github.com/BeryJu/pixie/pkg/fs/cached"
+	"github.com/BeryJu/pixie/pkg/fs/standard"
 	log "github.com/sirupsen/logrus"
 )
 

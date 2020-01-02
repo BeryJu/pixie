@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/config"
-	"git.beryju.org/BeryJu.org/pixie/pkg/server"
+	"github.com/BeryJu/pixie/pkg/config"
+	"github.com/BeryJu/pixie/pkg/server"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/config"
-	"git.beryju.org/BeryJu.org/pixie/pkg/fs/base"
-	"git.beryju.org/BeryJu.org/pixie/pkg/utils"
+	"github.com/BeryJu/pixie/pkg/config"
+	"github.com/BeryJu/pixie/pkg/fs/base"
+	"github.com/BeryJu/pixie/pkg/utils"
 	log "github.com/sirupsen/logrus"
 )
 

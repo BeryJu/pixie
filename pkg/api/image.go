@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"git.beryju.org/BeryJu.org/pixie/pkg/config"
+	"github.com/BeryJu/pixie/pkg/config"
 
 	log "github.com/sirupsen/logrus"
 
