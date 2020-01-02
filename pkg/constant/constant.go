@@ -4,4 +4,4 @@ package constant
 // const NoListingFileName string = ".no-listing"
 
 // IndexPageFileName File of index page, will be shown instead of directory listing
-const IndexPageFileName string = "index.html"
+const IndexPageFileName string = "/index.html"
