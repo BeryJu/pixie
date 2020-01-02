@@ -46,14 +46,11 @@ jobs:
           asset_content_type: application/octet-stream
   build-docker:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch:
-          - amd64
-          - arm64
-    name: Build Docker image for ${{ matrix.arch }}
+    name: Build Docker image
     steps:
       - uses: actions/checkout@master
+      - name: Set env
+        run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
       - name: Docker Login Registry
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -62,8 +59,10 @@ jobs:
       - name: Building Docker Image
         run: docker build
           --no-cache
-          --build-arg GOARCH=${{ matrix.arch }}
-          -t beryju/pixie:latest-${{ matrix.arch }}
+          -t beryju/pixie:latest
+          -t beryju/pixie:${{ env.RELEASE_VERSION }}
           -f Dockerfile .
-      - name: Push Docker Container to Registry (latest-${{ matrix.arch }})
-        run: docker push beryju/pixie:latest-${{ matrix.arch }}
+      - name: Push Docker Container to Registry (latest)
+        run: docker push beryju/pixie:latest
+      - name: Push Docker Container to Registry (versioned)
+        run: docker push beryju/pixie:${{ env.RELEASE_VERSION }}
