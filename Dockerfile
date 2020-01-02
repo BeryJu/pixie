@@ -8,9 +8,9 @@ RUN go get github.com/gobuffalo/packr/v2/packr2 && \
     packr2 && \
     go build -v -o /go/bin/pixie
 
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-WORKDIR /
+FROM scratch
 COPY --from=builder /go/bin/pixie /pixie
 EXPOSE 8080
-CMD "/pixie"
+WORKDIR /web-root
+CMD [ "/pixie" ]
+ENTRYPOINT [ "/pixie" ]
