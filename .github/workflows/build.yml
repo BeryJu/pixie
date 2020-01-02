@@ -1,23 +1,49 @@
 on:
-  - push
+  push:
+    tags:
+    - 'v*'
 name: pixie-build
 
 jobs:
   build-binary:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch:
-          - amd64
-          - arm64
-    name: Build Binary for ${{ matrix.arch }}
+    name: Build Binary for Linux
     steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get_version.outputs.result }}
+          draft: false
+          prerelease: false
       - uses: actions/checkout@master
       - name: Setup go
         uses: actions/setup-go@v1
         with:
           go-version: '1.13.x'
-      - run: make linux-${{ matrix.arch }}
+      - run: make linux-amd64
+      - name: Upload binary
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: bin/pixie-linux-amd64
+          asset_name: pixie-linux-amd64
+          asset_content_type: application/octet-stream
+      - run: make linux-amd64
+      - name: Upload binary
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: bin/pixie-linux-arm64
+          asset_name: pixie-linux-arm64
+          asset_content_type: application/octet-stream
   build-docker:
     runs-on: ubuntu-latest
     strategy:
@@ -37,7 +63,7 @@ jobs:
         run: docker build
           --no-cache
           --build-arg GOARCH=${{ matrix.arch }}
-          -t beryju/pixie:latest
+          -t beryju/pixie:latest-${{ matrix.arch }}
           -f Dockerfile .
-      - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/pixie:latest
+      - name: Push Docker Container to Registry (latest-${{ matrix.arch }})
+        run: docker push beryju/pixie:latest-${{ matrix.arch }}
