@@ -17,7 +17,9 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: '1.13.x'
-      - run: make linux-${{ matrix.arch }}
+      - run: |
+          export PATH=$PATH:$GOBIN
+          make linux-${{ matrix.arch }}
   build-docker:
     runs-on: ubuntu-latest
     strategy:
@@ -34,12 +36,10 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Building Docker Image
-        run: |
-          cd gatekeeper
-          docker build \
-          --no-cache \
+        run: docker build
+          --no-cache
           -e GOARCH=${{ matrix.arch }}
-          -t beryju/pixie:latest \
+          -t beryju/pixie:latest
           -f Dockerfile .
       - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/passbook-gatekeeper:latest
+        run: docker push beryju/pixie:latest
